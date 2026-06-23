@@ -1,0 +1,1601 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="description" content="Calculate, analyze, and predict your academic performance with a world-class experience.">
+<title>TGPA Dashboard Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hue: 220;
+  --bg-base: hsl(var(--hue), 20%, 6%);
+  --bg-surface: hsla(var(--hue), 15%, 12%, 0.6);
+  --bg-surface-solid: hsl(var(--hue), 15%, 12%);
+  --bg-surface-hover: hsla(var(--hue), 15%, 16%, 0.8);
+  --text-primary: hsl(var(--hue), 10%, 98%);
+  --text-secondary: hsl(var(--hue), 10%, 75%);
+  --text-muted: hsl(var(--hue), 10%, 55%);
+  --border: hsla(var(--hue), 20%, 30%, 0.5);
+  --border-light: hsla(var(--hue), 20%, 35%, 0.25);
+  --accent: hsl(250, 80%, 65%);
+  --accent-hover: hsl(250, 80%, 75%);
+  --accent-glow: hsla(250, 80%, 65%, 0.4);
+  --success: hsl(150, 80%, 50%);
+  --success-glow: hsla(150, 80%, 50%, 0.4);
+  --danger: hsl(350, 80%, 60%);
+  --warning: hsl(40, 80%, 60%);
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --glass-blur: blur(24px);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --ring-color: var(--accent);
+}
+
+[data-theme="light"] {
+  --bg-base: hsl(var(--hue), 10%, 96%);
+  --bg-surface: hsla(0, 0%, 100%, 0.7);
+  --bg-surface-solid: hsl(0, 0%, 100%);
+  --bg-surface-hover: hsla(var(--hue), 10%, 98%, 0.9);
+  --text-primary: hsl(var(--hue), 20%, 10%);
+  --text-secondary: hsl(var(--hue), 10%, 35%);
+  --text-muted: hsl(var(--hue), 10%, 50%);
+  --border: hsla(var(--hue), 20%, 80%, 0.7);
+  --border-light: hsla(var(--hue), 20%, 90%, 0.5);
+  --accent: hsl(250, 80%, 55%);
+  --accent-hover: hsl(250, 80%, 45%);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; cursor: none; }
+
+body {
+  font-family: var(--font);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* Custom Cursor */
+.cursor-dot {
+  position: fixed; top: 0; left: 0; width: 6px; height: 6px;
+  background: var(--text-primary); border-radius: 50%;
+  pointer-events: none; z-index: 10000;
+  transform: translate3d(-50%, -50%, 0); transition: opacity 0.2s, background 0.2s;
+  will-change: transform;
+}
+.cursor-outline {
+  position: fixed; top: 0; left: 0; width: 40px; height: 40px;
+  border: 1px solid var(--border); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate3d(-50%, -50%, 0); transition: width 0.2s, height 0.2s, border-color 0.2s;
+  will-change: transform;
+}
+.hovering .cursor-dot { background: var(--accent); transform: translate3d(-50%, -50%, 0) scale(1.5); }
+.hovering .cursor-outline { width: 60px; height: 60px; border-color: var(--accent-glow); background: hsla(250, 80%, 65%, 0.05); backdrop-filter: blur(2px); }
+
+/* Ambient Background */
+.ambient-bg {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: -2; overflow: hidden; pointer-events: none;
+}
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(80px);
+  opacity: 0.4; animation: float 20s infinite ease-in-out alternate;
+  will-change: transform;
+}
+.orb-1 { width: 40vw; height: 40vw; background: hsla(250, 80%, 60%, 0.3); top: -10vw; left: -10vw; }
+.orb-2 { width: 50vw; height: 50vw; background: hsla(190, 80%, 50%, 0.2); bottom: -20vw; right: -10vw; animation-delay: -5s; }
+.orb-3 { width: 30vw; height: 30vw; background: hsla(300, 80%, 60%, 0.2); top: 40vh; left: 50vw; animation-delay: -10s; }
+@keyframes float {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(10vw, 10vh, 0) scale(1.2); }
+}
+
+/* Floating Particles Canvas */
+#particles-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; opacity: 0.5; }
+
+/* Layout */
+.app-container {
+  max-width: 1400px; margin: 0 auto; padding: clamp(1rem, 4vw, 2rem);
+  display: grid; grid-template-columns: 380px 1fr; gap: clamp(1.5rem, 3vw, 2.5rem);
+  opacity: 0; animation: appFadeIn 1s forwards ease-out; animation-delay: 0.1s;
+}
+@keyframes appFadeIn { to { opacity: 1; } }
+
+/* Header */
+header {
+  grid-column: 1 / -1; display: flex; justify-content: space-between;
+  align-items: center; padding-bottom: 2rem; border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1rem;
+}
+.logo-area { display: flex; align-items: center; gap: 0.75rem; }
+.logo-icon {
+  width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent), #b185ff);
+  border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
+  font-weight: 800; color: white; letter-spacing: -1px;
+}
+.logo-text { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.5px; }
+.header-actions { display: flex; gap: 0.5rem; align-items: center; }
+
+/* Buttons & Inputs */
+button, input, select { cursor: none; }
+button {
+  background: transparent; border: none; color: inherit; font-family: inherit;
+  transition: transform 0.2s ease, background 0.3s, color 0.3s, box-shadow 0.3s, border-color 0.3s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; outline: none; position: relative; overflow: hidden;
+  will-change: transform;
+}
+.btn-icon {
+  width: 40px; height: 40px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+  background: var(--bg-surface); backdrop-filter: var(--glass-blur); color: var(--text-secondary);
+}
+.btn-icon:hover { background: var(--bg-surface-hover); color: var(--text-primary); border-color: var(--text-muted); }
+.btn-primary {
+  background: var(--text-primary); color: var(--bg-base); padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 0.95rem;
+}
+.btn-primary:hover { box-shadow: 0 8px 24px hsla(var(--hue), 10%, 98%, 0.2); }
+.btn-secondary {
+  background: var(--bg-surface); border: 1px solid var(--border); padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm); font-weight: 500; font-size: 0.95rem; backdrop-filter: var(--glass-blur);
+}
+.btn-secondary:hover { background: var(--bg-surface-hover); border-color: var(--text-muted); }
+.btn-danger { color: var(--danger); }
+.btn-danger:hover { background: hsla(350, 80%, 60%, 0.1); border-color: var(--danger); }
+
+/* Magnetic Button Wrapper */
+.magnetic-wrap { display: inline-block; padding: 10px; margin: -10px; }
+
+input {
+  background: transparent; border: none; color: var(--text-primary); font-family: inherit;
+  outline: none; width: 100%; font-size: 1rem;
+}
+input::placeholder { color: var(--text-muted); }
+
+/* Glass Card Base */
+.glass-card {
+  background: var(--bg-surface); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border); border-radius: var(--radius-md); position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); overflow: hidden;
+}
+.glass-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, -500px) var(--mouse-y, -500px), var(--border-light), transparent 40%);
+  z-index: 0; pointer-events: none; transition: opacity 0.5s; opacity: 0;
+}
+.glass-card:hover::before { opacity: 1; }
+.glass-card > * { position: relative; z-index: 1; }
+
+/* Left Column: Hero & Analytics */
+.left-col { display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 1.5rem); }
+
+.stagger-1 { opacity: 0; animation: slideUpFade 0.6s 0.1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.stagger-2 { opacity: 0; animation: slideUpFade 0.6s 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.stagger-3 { opacity: 0; animation: slideUpFade 0.6s 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.stagger-4 { opacity: 0; animation: slideUpFade 0.6s 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translate3d(0, 20px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.hero-card {
+  padding: clamp(2rem, 4vw, 3rem) clamp(1.5rem, 3vw, 2rem); display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.hero-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-secondary); font-weight: 600; margin-bottom: 2rem; }
+.tgpa-display { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+.progress-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.progress-ring circle {
+  fill: transparent; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.4s ease;
+}
+.progress-ring-bg { stroke: var(--border); }
+.progress-ring-fg { stroke: var(--ring-color); stroke-dasharray: 628; stroke-dashoffset: 628; filter: drop-shadow(0 0 8px var(--ring-color)); }
+.tgpa-number { font-size: clamp(3.5rem, 6vw, 4.5rem); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.05em; line-height: 1; }
+
+.hero-stats { display: flex; width: 100%; justify-content: space-between; border-top: 1px solid var(--border-light); padding-top: 1.5rem; }
+.stat-item { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.stat-value { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Academic Health Score */
+.health-score { display: flex; align-items: center; justify-content: space-between; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-light); width: 100%; }
+.health-info { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
+.health-title { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+.health-sub { font-size: 0.75rem; color: var(--text-muted); }
+.health-ring-wrap { position: relative; width: 44px; height: 44px; }
+.health-ring-svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+.health-ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.health-ring-fg { fill: none; stroke: var(--success); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 125.6; stroke-dashoffset: 125.6; transition: stroke-dashoffset 1s ease; }
+.health-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 700; }
+
+.analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+.analytics-card { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.analytics-card .stat-label { font-size: 0.75rem; }
+.analytics-card .stat-value { font-size: 1.25rem; }
+.analytics-card .stat-sub { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Charts & Insights */
+.insights-section { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+.section-title { font-size: 0.9rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+.chart-container { display: flex; flex-direction: column; gap: 0.75rem; }
+.bar-row { display: flex; align-items: center; gap: 0.75rem; font-size: 0.85rem; }
+.bar-label { width: 30px; font-weight: 600; color: var(--text-muted); }
+.bar-track { flex: 1; height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 4px; width: 0%; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1); }
+.bar-val { width: 24px; text-align: right; font-variant-numeric: tabular-nums; color: var(--text-secondary); }
+
+/* Badges */
+.badges-container { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.badge-pill { 
+  padding: 0.3rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; 
+  background: hsla(220, 20%, 20%, 0.5); color: var(--text-muted); border: 1px solid var(--border);
+  display: flex; align-items: center; gap: 0.4rem; transition: var(--transition);
+}
+.badge-pill.active { background: hsla(40, 80%, 60%, 0.1); color: var(--warning); border-color: hsla(40, 80%, 60%, 0.3); box-shadow: 0 0 10px hsla(40, 80%, 60%, 0.2); }
+.badge-pill.active.success { background: hsla(150, 80%, 50%, 0.1); color: var(--success); border-color: hsla(150, 80%, 50%, 0.3); box-shadow: 0 0 10px hsla(150, 80%, 50%, 0.2); }
+
+/* Right Column: Workspace */
+.workspace { display: flex; flex-direction: column; gap: 1.5rem; }
+.workspace-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.workspace-title { font-size: 1.25rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+.badge { background: var(--bg-surface-hover); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); }
+
+.subject-list { display: flex; flex-direction: column; gap: 0.75rem; position: relative; min-height: 200px; }
+
+.subject-row {
+  display: grid; grid-template-columns: auto 2fr 3fr 1fr 1fr auto; gap: 1rem; align-items: center;
+  padding: 1rem 1.25rem; padding-left: 0.5rem; background: var(--bg-surface-solid); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s, border-color 0.2s; 
+  transform-origin: top;
+  will-change: transform, opacity;
+}
+/* Drag & Drop Styles */
+.subject-row[draggable="true"] { cursor: grab; }
+.subject-row.dragging { opacity: 0.4; cursor: grabbing; transform: scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.2); z-index: 10; }
+.subject-row.drag-over { border-top: 2px solid var(--accent); transform: translate3d(0, 4px, 0); }
+.drag-handle { width: 30px; display: flex; justify-content: center; align-items: center; color: var(--border); transition: color 0.2s; }
+.subject-row:hover .drag-handle { color: var(--text-muted); }
+
+.subject-row.anim-in { animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translate3d(0, -10px, 0) scale(0.98); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+.subject-row.removing { opacity: 0; transform: scale(0.95); pointer-events: none; }
+.subject-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); background: var(--bg-surface-hover); }
+
+.input-group { display: flex; flex-direction: column; gap: 0.25rem; position: relative; }
+.input-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; }
+.subject-row input { padding: 0.25rem 0; font-size: 1.05rem; font-weight: 500; }
+.subject-row input[type="number"] { font-variant-numeric: tabular-nums; }
+.subject-row input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.grade-point-display {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: hsla(0,0%,50%,0.1); border-radius: var(--radius-sm); padding: 0.5rem; min-width: 60px;
+  transition: background 0.3s, color 0.3s;
+}
+.grade-point-val { font-size: 1.25rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.grade-point-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; }
+
+.row-actions { display: flex; opacity: 0; transition: opacity 0.2s; }
+.subject-row:hover .row-actions, .subject-row:focus-within .row-actions { opacity: 1; }
+.btn-remove { width: 32px; height: 32px; border-radius: var(--radius-sm); color: var(--text-muted); }
+.btn-remove:hover { background: hsla(350, 80%, 60%, 0.1); color: var(--danger); }
+
+.empty-state {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; border: 1px dashed var(--border); border-radius: var(--radius-md); gap: 1rem; color: var(--text-muted);
+  transition: opacity 0.4s;
+}
+.empty-icon { width: 48px; height: 48px; opacity: 0.5; margin-bottom: 0.5rem; }
+
+/* Loading State */
+.loading-skeleton {
+  position: absolute; inset: 0; display: flex; flex-direction: column; gap: 0.75rem; background: var(--bg-base); z-index: 5;
+  transition: opacity 0.5s; pointer-events: none;
+}
+.skel-row { height: 72px; background: var(--bg-surface-solid); border-radius: var(--radius-sm); position: relative; overflow: hidden; }
+.skel-row::after {
+  content: ''; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, hsla(var(--hue), 10%, 98%, 0.05), transparent);
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+
+/* Toast Notification System */
+.toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9000; display: flex; flex-direction: column; gap: 1rem; pointer-events: none; }
+.toast { 
+  background: var(--bg-surface-solid); border: 1px solid var(--border); padding: 1rem 1.5rem; 
+  border-radius: var(--radius-sm); color: var(--text-primary); display: flex; align-items: center; gap: 0.75rem; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3); pointer-events: auto;
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+.toast.hiding { animation: fadeOutRight 0.3s forwards; }
+.toast-icon { width: 20px; height: 20px; flex-shrink: 0; }
+.toast.success .toast-icon { color: var(--success); }
+.toast.info .toast-icon { color: var(--accent); }
+.toast.error .toast-icon { color: var(--danger); }
+@keyframes slideInRight { from { opacity: 0; transform: translate3d(50px, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes fadeOutRight { to { opacity: 0; transform: translate3d(50px, 0, 0); } }
+
+/* Onboarding Overlay */
+.onboarding-overlay {
+  position: fixed; inset: 0; background: var(--bg-base); z-index: 9500; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; transition: opacity 0.8s, visibility 0.8s;
+}
+.onboarding-overlay.hidden { opacity: 0; visibility: hidden; }
+.onboarding-content { max-width: 500px; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+.onboarding-title { font-size: clamp(2rem, 5vw, 2.5rem); font-weight: 800; letter-spacing: -1px; background: linear-gradient(135deg, var(--text-primary), var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.onboarding-sub { font-size: 1.1rem; color: var(--text-muted); }
+
+/* Command Palette */
+.cmd-palette-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+  z-index: 8000; display: flex; justify-content: center; align-items: flex-start; padding-top: 15vh;
+  opacity: 0; pointer-events: none; transition: opacity 0.2s;
+}
+.cmd-palette-overlay.active { opacity: 1; pointer-events: all; }
+.cmd-palette {
+  width: 100%; max-width: 600px; background: var(--bg-surface-solid); border: 1px solid var(--border-light);
+  border-radius: var(--radius-md); box-shadow: 0 24px 64px rgba(0,0,0,0.4); overflow: hidden;
+  transform: translate3d(0, 20px, 0) scale(0.95); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 1rem;
+}
+.cmd-palette-overlay.active .cmd-palette { transform: translate3d(0, 0, 0) scale(1); }
+.cmd-input-wrap { display: flex; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+.cmd-input { font-size: 1.25rem; }
+.cmd-list { max-height: 300px; overflow-y: auto; padding: 0.5rem; }
+.cmd-item {
+  padding: 0.75rem 1rem; border-radius: var(--radius-sm); cursor: none; display: flex; align-items: center; gap: 1rem;
+  color: var(--text-secondary); transition: background 0.1s;
+}
+.cmd-item.selected, .cmd-item:hover { background: var(--bg-surface-hover); color: var(--text-primary); }
+.cmd-kbd { background: var(--bg-base); padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.75rem; border: 1px solid var(--border); font-family: monospace; margin-left: auto; }
+
+/* Confetti Canvas */
+#confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+
+/* Icons (Inline SVG) */
+.icon { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Print Styles (Report Card) */
+@media print {
+  @page { size: A4; margin: 2cm; }
+  body { background: white !important; color: black !important; }
+  .ambient-bg, .header-actions, .btn-primary, .row-actions, .empty-state, #confetti-canvas, .cmd-palette-overlay, .toast-container, .cursor-dot, .cursor-outline, .drag-handle, #particles-bg, .bottom-action-bar { display: none !important; }
+  .app-container { display: block; padding: 0; max-width: none; opacity: 1; animation: none; }
+  header { border-bottom: 2px solid black; padding-bottom: 1rem; margin-bottom: 2rem; }
+  .logo-text { color: black; }
+  
+  .left-col { display: block; margin-bottom: 2rem; page-break-inside: avoid; }
+  .hero-card { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0; flex-direction: row; justify-content: space-between; text-align: left; margin-bottom: 2rem; }
+  .tgpa-display { width: auto; height: auto; margin: 0; }
+  .progress-ring { display: none; }
+  .tgpa-number { font-size: 4rem; color: black; }
+  .hero-title { display: none; }
+  .hero-stats { border-top: none; padding-top: 0; justify-content: flex-end; gap: 3rem; }
+  .stat-label { color: #555; }
+  
+  .analytics-grid { display: flex; gap: 2rem; page-break-inside: avoid; }
+  .analytics-card { background: transparent !important; border: 1px solid #ccc !important; padding: 1rem; flex: 1; }
+  .insights-section { page-break-inside: avoid; border: 1px solid #ccc; padding: 1rem; margin-top: 2rem; }
+  
+  .workspace { display: block; }
+  .workspace-header { margin-bottom: 1rem; }
+  .subject-list { display: table; width: 100%; border-collapse: collapse; min-height: auto; }
+  .subject-row { display: table-row; background: transparent !important; border: none !important; animation: none; }
+  .subject-row > * { display: table-cell; padding: 0.75rem 0.5rem; border-bottom: 1px solid #ddd; vertical-align: middle; }
+  .input-label { display: none; }
+  .subject-row input { border: none !important; background: transparent !important; color: black !important; padding: 0; width: auto; pointer-events: none; }
+  .grade-point-display { background: transparent; padding: 0; flex-direction: row; gap: 0.5rem; justify-content: flex-end; }
+  .grade-point-label { display: none; }
+  .subject-list::before { content: ''; display: table-header-group; }
+  .workspace::before { content: "Official Semester Report"; display: block; font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem; border-bottom: 2px solid black; padding-bottom: 0.5rem; }
+}
+
+/* Touch Optimizations (For any touch device, e.g. iPads) */
+@media (pointer: coarse) {
+  .cursor-dot, .cursor-outline { display: none !important; }
+  * { cursor: auto !important; }
+  .drag-handle { display: none !important; }
+  .row-actions { opacity: 1; }
+}
+
+/* Tablet Layout */
+@media (max-width: 1024px) {
+  .app-container { grid-template-columns: 1fr; }
+  .left-col { flex-direction: row; flex-wrap: wrap; }
+  .hero-card, .analytics-grid, .insights-section { flex: 1; min-width: 300px; }
+}
+
+/* Sticky Action Bar Initial State */
+.bottom-action-bar { display: none; }
+
+/* Mobile-First Redesign */
+@media (max-width: 768px) {
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1.25rem;
+    padding-bottom: 7rem; /* Make room for bottom bar */
+  }
+  .left-col {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    gap: 1.25rem;
+    width: 100%;
+  }
+  .hero-card, .analytics-grid, .insights-section { min-width: 0; width: 100%; flex: none; }
+
+  header { padding-bottom: 1rem; margin-bottom: 0; border-bottom: none; }
+  .workspace-header .magnetic-wrap { display: none; } /* Hide desktop Add Subject */
+
+  /* Bottom Action Bar */
+  .bottom-action-bar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 0.75rem 1rem;
+    background: hsla(var(--hue), 20%, 6%, 0.85);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 1px solid var(--border-light);
+    z-index: 9000;
+    gap: 0.75rem;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
+  }
+  [data-theme="light"] .bottom-action-bar { background: hsla(var(--hue), 10%, 96%, 0.85); }
+  .bottom-action-bar button { border-radius: var(--radius-lg); }
+  #btnMobileCalc { flex: 0 0 auto; min-width: 75px; display: flex; flex-direction: column; gap: 0.1rem; padding: 0.5rem; justify-content: center; align-items: center; }
+  #mobileTgpaVal { font-size: 1.1rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  #btnMobileAdd { flex: 1; font-size: 1.05rem; padding: 0.75rem 1rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Hero Card Redesign */
+  .hero-card {
+    display: grid;
+    grid-template-columns: min-content minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1rem 1.25rem;
+    padding: 1.25rem;
+  }
+  .hero-title { display: none; }
+  .tgpa-display {
+    grid-column: 1; grid-row: 1 / 3;
+    width: 90px; height: 90px; margin: 0;
+  }
+  .progress-ring { width: 100%; height: 100%; }
+  .tgpa-number { font-size: 2rem; }
+
+  .hero-stats {
+    grid-column: 2; grid-row: 1;
+    border-top: none; padding: 0; width: 100%;
+    flex-direction: row; justify-content: flex-start; gap: 1rem; flex-wrap: wrap;
+  }
+  .stat-item { align-items: flex-start; }
+  .stat-value { font-size: 1.25rem; }
+  .stat-label { font-size: 0.65rem; }
+
+  .health-score {
+    grid-column: 2; grid-row: 2;
+    margin-top: 0; padding-top: 0.75rem; border-top: 1px solid var(--border-light);
+  }
+  .health-info { min-width: 0; }
+  .health-ring-wrap { width: 36px; height: 36px; flex-shrink: 0; }
+  .health-val { font-size: 0.75rem; }
+  .health-title { font-size: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .health-sub { font-size: 0.65rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* Analytics Grid Redesign */
+  .analytics-grid { grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .analytics-card { padding: 0.75rem; gap: 0.2rem; min-width: 0; }
+  .analytics-card .stat-value { font-size: 1.1rem; }
+  .analytics-card .stat-label { font-size: 0.65rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .analytics-card .stat-sub { font-size: 0.6rem; }
+
+  /* Insights & Charts Redesign */
+  .insights-section { padding: 1rem; gap: 1rem; }
+  .section-title { font-size: 0.75rem; margin-bottom: 0; }
+  .chart-container { flex-direction: row; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.25rem; }
+  .bar-row {
+    background: var(--bg-surface-hover);
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    padding: 0.25rem 0.5rem;
+    flex: 1 1 auto;
+    justify-content: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+  .bar-row[data-val="0"] { display: none !important; }
+  .bar-track { display: none; }
+  .bar-label { font-size: 0.75rem; width: auto; font-weight: 700; color: var(--text-primary); }
+  .bar-val { width: auto; font-size: 0.75rem; }
+
+  .badges-container { gap: 0.4rem; }
+  .badge-pill { font-size: 0.7rem; padding: 0.25rem 0.5rem; white-space: nowrap; }
+  .badge-pill .icon { width: 12px; height: 12px; }
+
+  /* Subject Card Redesign */
+  .subject-list { gap: 0.75rem; }
+  .subject-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    gap: 0.75rem 0.5rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--bg-surface);
+  }
+
+  /* Top Row: Code */
+  .subject-row .input-group:nth-child(2) { grid-column: 1 / 2; grid-row: 1; padding-right: 0.5rem; }
+  
+  /* Grade Display */
+  .subject-row .grade-point-display { 
+    grid-column: 2 / 3; grid-row: 1; 
+    flex-direction: row; 
+    background: hsla(0,0%,50%,0.15); 
+    padding: 0.25rem 0.5rem; 
+    border-radius: 20px; 
+    align-items: center; 
+    justify-self: end;
+    margin-right: 2.25rem; /* Make room for delete button */
+    border: none;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .subject-row .grade-point-display::before { content: 'GP'; font-size: 0.6rem; color: var(--text-muted); font-weight: 700; margin-right: 0.25rem; }
+  .subject-row .grade-point-display .grade-point-label { display: none; }
+  .subject-row .grade-point-display .grade-point-val { font-size: 0.85rem; }
+  
+  /* Actions */
+  .subject-row .row-actions { 
+    position: absolute; top: 0.85rem; right: 0.85rem;
+    opacity: 1;
+  }
+  .btn-remove { width: 32px; height: 32px; background: hsla(350, 80%, 60%, 0.1); color: var(--danger); border-radius: 50%; }
+
+  /* Middle Row: Name */
+  .subject-row .input-group:nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
+
+  /* Bottom Row: Marks | Credits */
+  .subject-row .input-group:nth-child(4) { grid-column: 1 / 2; grid-row: 3; }
+  .subject-row .input-group:nth-child(5) { grid-column: 2 / 3; grid-row: 3; }
+
+  .subject-row .input-group:nth-child(4), 
+  .subject-row .input-group:nth-child(5) {
+    flex-direction: row; align-items: center; justify-content: space-between;
+    background: hsla(0,0%,0%,0.2);
+    padding: 0.5rem 0.5rem;
+    border-radius: var(--radius-sm);
+    min-width: 0;
+  }
+  [data-theme="light"] .subject-row .input-group:nth-child(4), 
+  [data-theme="light"] .subject-row .input-group:nth-child(5) {
+    background: hsla(0,0%,0%,0.05);
+  }
+
+  .subject-row .input-label { margin: 0; font-size: 0.7rem; text-transform: capitalize; letter-spacing: 0; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+  .subject-row input { font-size: 1rem; padding: 0; width: 100%; min-width: 0; }
+  
+  .subject-row .input-group:nth-child(2) .input-label,
+  .subject-row .input-group:nth-child(3) .input-label { display: none; }
+  
+  .subject-row .input-group:nth-child(2) input { font-size: 1.15rem; font-weight: 700; text-overflow: ellipsis; }
+  .subject-row .input-group:nth-child(3) input { font-size: 0.9rem; color: var(--text-muted); text-overflow: ellipsis; }
+  
+  .subject-row .input-group:nth-child(4) input,
+  .subject-row .input-group:nth-child(5) input { text-align: right; width: 40px; flex-shrink: 0; font-weight: 600; background: transparent; }
+
+  /* Overlays & Toasts */
+  .onboarding-content { padding: 1.5rem; }
+  .onboarding-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .toast-container { bottom: 6.5rem; right: 1rem; left: 1rem; align-items: center; }
+  .toast { width: 100%; max-width: 400px; padding: 0.75rem 1rem; font-size: 0.85rem; }
+  
+  /* Performance Tweaks */
+  .glass-card { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  .ambient-bg { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Custom Cursor Elements -->
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="cursor-outline" id="cursorOutline" aria-hidden="true"></div>
+
+<!-- Ambient & Particle Background -->
+<div class="ambient-bg" id="ambientBg" aria-hidden="true">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<canvas id="particles-bg" aria-hidden="true"></canvas>
+
+<!-- Confetti Layer -->
+<canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+<!-- Onboarding Overlay -->
+<div class="onboarding-overlay" id="onboarding" role="dialog" aria-labelledby="onboardTitle" aria-describedby="onboardDesc">
+  <div class="onboarding-content">
+    <div class="logo-icon" style="width: 64px; height: 64px; font-size: 2rem; margin: 0 auto;" aria-hidden="true">T</div>
+    <div class="onboarding-title" id="onboardTitle">TGPA Dashboard Pro</div>
+    <div class="onboarding-sub" id="onboardDesc">Calculate, analyze, and predict your academic performance with a world-class experience.</div>
+    <div class="magnetic-wrap">
+      <button class="btn-primary magnetic-btn" id="btnStart" style="padding: 1rem 3rem; font-size: 1.1rem; border-radius: 30px;">Get Started</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<div class="app-container" id="appMain">
+  <header class="stagger-1">
+    <div class="logo-area">
+      <div class="logo-icon" aria-hidden="true">T</div>
+      <div class="logo-text">TGPA Dashboard</div>
+    </div>
+    <div class="header-actions">
+      <div class="magnetic-wrap"><button class="btn-icon magnetic-btn" id="btnTheme" title="Toggle Theme" aria-label="Toggle Theme"><svg class="icon moon-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg></button></div>
+      <div class="magnetic-wrap"><button class="btn-icon magnetic-btn" id="btnExport" title="Export PDF (Ctrl+P)" aria-label="Export PDF"><svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+      <div class="magnetic-wrap"><button class="btn-icon btn-danger magnetic-btn" id="btnReset" title="Reset Data" aria-label="Reset Data"><svg class="icon" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button></div>
+    </div>
+  </header>
+
+  <aside class="left-col">
+    <!-- Hero Scoreboard -->
+    <section class="glass-card hero-card stagger-2" aria-labelledby="heroTitle">
+      <h2 class="hero-title" id="heroTitle">Current TGPA</h2>
+      <div class="tgpa-display">
+        <svg class="progress-ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="progress-ring-bg" cx="110" cy="110" r="100"></circle>
+          <circle class="progress-ring-fg" cx="110" cy="110" r="100" id="tgpaRing"></circle>
+        </svg>
+        <div class="tgpa-text">
+          <span class="tgpa-number" id="tgpaValue">0.00</span>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="totCredits">0</span>
+          <span class="stat-label">Credits</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="totPoints">0</span>
+          <span class="stat-label">Points</span>
+        </div>
+      </div>
+      <!-- Academic Health -->
+      <div class="health-score" title="Based on total credits, TGPA and consistency">
+        <div class="health-info">
+          <span class="health-title">Academic Health</span>
+          <span class="health-sub" id="healthSub">Evaluating...</span>
+        </div>
+        <div class="health-ring-wrap" aria-hidden="true">
+          <svg class="health-ring-svg" viewBox="0 0 44 44">
+            <circle class="health-ring-bg" cx="22" cy="22" r="20"></circle>
+            <circle class="health-ring-fg" cx="22" cy="22" r="20" id="healthRing"></circle>
+          </svg>
+          <div class="health-val" id="healthVal">--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Analytics Grid -->
+    <section class="analytics-grid stagger-3" aria-label="Quick Analytics">
+      <div class="glass-card analytics-card">
+        <span class="stat-label">Highest Score</span>
+        <span class="stat-value" id="statHighVal">-</span>
+        <span class="stat-sub" id="statHighSub">Add subjects to see</span>
+      </div>
+      <div class="glass-card analytics-card">
+        <span class="stat-label">Average Marks</span>
+        <span class="stat-value" id="statAvgVal">-</span>
+        <span class="stat-sub" id="statAvgSub">Across all subjects</span>
+      </div>
+      <div class="glass-card analytics-card">
+        <span class="stat-label">Lowest Score</span>
+        <span class="stat-value" id="statLowVal">-</span>
+        <span class="stat-sub" id="statLowSub">Add subjects to see</span>
+      </div>
+      <div class="glass-card analytics-card">
+        <span class="stat-label">Status</span>
+        <span class="stat-value" id="statStatus">-</span>
+        <span class="stat-sub" id="statStatusSub">Keep pushing!</span>
+      </div>
+    </section>
+
+    <!-- Semester Insights Dashboard (Charts & Badges) -->
+    <section class="glass-card insights-section stagger-4" aria-labelledby="insightsTitle">
+      <h2 class="section-title" id="insightsTitle">Semester Insights</h2>
+      
+      <!-- Grade Distribution Chart -->
+      <div class="chart-container">
+        <span class="stat-label" style="margin-bottom: -0.25rem;">Grade Distribution</span>
+        <div class="bar-chart" id="gradeChart" aria-hidden="true">
+          <!-- Bars injected via JS -->
+          <div class="bar-row" data-val="0"><span class="bar-label">O</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-val">0</span></div>
+          <div class="bar-row" data-val="0"><span class="bar-label">A+</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-val">0</span></div>
+          <div class="bar-row" data-val="0"><span class="bar-label">A</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span class="bar-val">0</span></div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div style="margin-top: 0.5rem;">
+        <span class="stat-label">Achievements</span>
+        <div class="badges-container" id="badgesContainer">
+          <div class="badge-pill" id="badgeStarter"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg> Starter</div>
+          <div class="badge-pill" id="badgePerfect"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg> Perfect 100</div>
+          <div class="badge-pill" id="badgeHigh"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg> Elite (9+)</div>
+        </div>
+      </div>
+    </section>
+  </aside>
+
+  <main class="workspace stagger-3" aria-label="Subject Management Workspace">
+    <div class="workspace-header">
+      <h1 class="workspace-title">
+        Subjects <span class="badge" id="subjectCount" aria-label="Total Subjects">0</span>
+      </h1>
+      <div class="magnetic-wrap">
+        <button class="btn-primary magnetic-btn" id="btnAddSubject">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add Subject
+        </button>
+      </div>
+    </div>
+
+    <div id="subjectList" class="subject-list" role="list">
+      <!-- Loading Skeleton (Hidden once initialized) -->
+      <div class="loading-skeleton" id="listSkeleton" aria-hidden="true">
+        <div class="skel-row"></div>
+        <div class="skel-row"></div>
+        <div class="skel-row"></div>
+      </div>
+      <!-- Subjects injected via JS -->
+    </div>
+
+    <div id="emptyState" class="empty-state" style="opacity: 0;">
+      <svg class="icon empty-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+      <h3>No subjects added yet</h3>
+      <p>Start by adding your first subject or importing data.</p>
+    </div>
+  </main>
+</div>
+
+<!-- Command Palette -->
+<div class="cmd-palette-overlay" id="cmdOverlay" role="dialog" aria-label="Command Palette">
+  <div class="cmd-palette" id="cmdPalette">
+    <div class="cmd-input-wrap">
+      <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" class="cmd-input" id="cmdInput" placeholder="Type a command..." autocomplete="off" aria-label="Command Input">
+    </div>
+    <div class="cmd-list" id="cmdList" role="listbox">
+      <div class="cmd-item" data-action="add" role="option">Add Subject <span class="cmd-kbd">Enter</span></div>
+      <div class="cmd-item" data-action="theme" role="option">Toggle Theme <span class="cmd-kbd">T</span></div>
+      <div class="cmd-item" data-action="export" role="option">Export PDF <span class="cmd-kbd">Ctrl+P</span></div>
+      <div class="cmd-item" data-action="reset" role="option">Clear All Data</div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Bottom Action Bar -->
+<div class="bottom-action-bar" aria-label="Mobile Actions">
+  <button class="btn-secondary" id="btnMobileCalc" aria-label="Current TGPA">
+    <span class="tgpa-mobile-val" id="mobileTgpaVal">0.00</span>
+    <span style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted);">TGPA</span>
+  </button>
+  <button class="btn-primary" id="btnMobileAdd">
+    <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    Add Subject
+  </button>
+</div>
+
+<script>
+/**
+ * Architecture: MVC Pattern in Vanilla JS
+ * Highly optimized version: Bug-free, High Performance, Accessible, Responsive.
+ */
+
+const App = (() => {
+  // --- Constants & Config ---
+  const STORAGE_KEY = 'tgpa_premium_pro_v2';
+  const MAX_MARKS = 100;
+  const MIN_MARKS = 0;
+  const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 100; // r=100
+  const HEALTH_CIRCUMFERENCE = 2 * Math.PI * 20;
+
+  // --- State (Model) ---
+  let state = {
+    theme: 'dark',
+    subjects: [],
+    onboarded: false
+  };
+
+  // --- Logic Engine ---
+  const generateId = () => window.crypto && crypto.randomUUID ? crypto.randomUUID() : 'id-' + Date.now() + '-' + Math.random().toString(36).substring(2, 9);
+
+  const escapeHTML = (str) => {
+    if (typeof str !== 'string') return '';
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag]));
+  };
+
+  const getGradePoint = (marks) => {
+    if (marks === null || marks === '' || isNaN(marks)) return 0;
+    const m = parseFloat(marks);
+    if (m >= 90) return 10;
+    if (m >= 80) return 9;
+    if (m >= 70) return 8;
+    if (m >= 60) return 7;
+    if (m >= 50) return 6;
+    if (m >= 40) return 5;
+    return 0;
+  };
+
+  const getGradeLetter = (gp) => {
+    if (gp === 10) return 'O';
+    if (gp === 9) return 'A+';
+    if (gp === 8) return 'A';
+    if (gp === 7) return 'B+';
+    if (gp === 6) return 'B';
+    if (gp === 5) return 'C';
+    return 'F';
+  };
+
+  const calculateResults = (subjects) => {
+    let totalCredits = 0;
+    let totalGradePoints = 0;
+    let validSubjects = 0;
+    let totalMarks = 0;
+    let highest = { marks: -1, name: '' };
+    let lowest = { marks: 101, name: '' };
+    
+    // Grade Distribution
+    let grades = { 'O': 0, 'A+': 0, 'A': 0, 'B+': 0, 'B': 0, 'C': 0, 'F': 0 };
+
+    subjects.forEach(sub => {
+      const c = parseFloat(sub.credits) || 0;
+      const m = parseFloat(sub.marks);
+      
+      if (c > 0 && !isNaN(m)) {
+        const gp = getGradePoint(m);
+        totalCredits += c;
+        totalGradePoints += (c * gp);
+        validSubjects++;
+        totalMarks += m;
+        
+        grades[getGradeLetter(gp)]++;
+
+        if (m > highest.marks) highest = { marks: m, name: sub.code || 'Subject' };
+        if (m < lowest.marks) lowest = { marks: m, name: sub.code || 'Subject' };
+      }
+    });
+
+    const tgpa = totalCredits > 0 ? (totalGradePoints / totalCredits) : 0;
+    const avgMarks = validSubjects > 0 ? (totalMarks / validSubjects) : 0;
+    
+    // Academic Health (0-100)
+    let healthScore = 0;
+    if (validSubjects > 0) {
+      healthScore = Math.min(100, Math.round((tgpa * 8) + ((avgMarks/10) * 2)));
+    }
+
+    return { tgpa, totalCredits, totalGradePoints, highest, lowest, avgMarks, validSubjects, grades, healthScore };
+  };
+
+  // --- Persistence ---
+  const saveState = debounce(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { console.warn('Local storage save failed', e); }
+  }, 500);
+
+  const loadState = () => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        state = { ...state, ...JSON.parse(saved) };
+      }
+    } catch (e) { console.warn('Failed to parse local storage', e); }
+  };
+
+  // --- View (UI Manipulators) ---
+  const DOM = {
+    root: document.documentElement,
+    tgpaValue: document.getElementById('tgpaValue'),
+    tgpaRing: document.getElementById('tgpaRing'),
+    totCredits: document.getElementById('totCredits'),
+    totPoints: document.getElementById('totPoints'),
+    subjectList: document.getElementById('subjectList'),
+    emptyState: document.getElementById('emptyState'),
+    subjectCount: document.getElementById('subjectCount'),
+    listSkeleton: document.getElementById('listSkeleton'),
+    
+    // Analytics
+    statHighVal: document.getElementById('statHighVal'),
+    statHighSub: document.getElementById('statHighSub'),
+    statAvgVal: document.getElementById('statAvgVal'),
+    statLowVal: document.getElementById('statLowVal'),
+    statLowSub: document.getElementById('statLowSub'),
+    statStatus: document.getElementById('statStatus'),
+    statStatusSub: document.getElementById('statStatusSub'),
+    
+    // Insights
+    gradeChart: document.getElementById('gradeChart'),
+    healthVal: document.getElementById('healthVal'),
+    healthRing: document.getElementById('healthRing'),
+    healthSub: document.getElementById('healthSub'),
+    
+    // Badges
+    badgeStarter: document.getElementById('badgeStarter'),
+    badgePerfect: document.getElementById('badgePerfect'),
+    badgeHigh: document.getElementById('badgeHigh'),
+    
+    // Buttons
+    btnAdd: document.getElementById('btnAddSubject'),
+    btnTheme: document.getElementById('btnTheme'),
+    btnReset: document.getElementById('btnReset'),
+    btnExport: document.getElementById('btnExport'),
+    btnStart: document.getElementById('btnStart'),
+    btnMobileAdd: document.getElementById('btnMobileAdd'),
+    btnMobileCalc: document.getElementById('btnMobileCalc'),
+    
+    // Overlays
+    onboarding: document.getElementById('onboarding'),
+    toastContainer: document.getElementById('toastContainer'),
+    cmdOverlay: document.getElementById('cmdOverlay'),
+    cmdInput: document.getElementById('cmdInput'),
+    cmdList: document.getElementById('cmdList'),
+    
+    canvas: document.getElementById('confetti-canvas'),
+    particlesCanvas: document.getElementById('particles-bg')
+  };
+
+  let currentTGPA = 0; 
+  let confettiFired = false;
+  let draggedItem = null;
+
+  // --- Toasts ---
+  const showToast = (message, type = 'info') => {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.setAttribute('role', 'alert');
+    let icon = '';
+    if (type === 'success') icon = '<svg class="icon toast-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+    else if (type === 'error') icon = '<svg class="icon toast-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+    else icon = '<svg class="icon toast-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+    
+    toast.innerHTML = `${icon} <span>${escapeHTML(message)}</span>`;
+    DOM.toastContainer.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('hiding');
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
+  };
+
+  const animateValue = (obj, start, end, duration, isFloat = false) => {
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const current = start + (end - start) * ease;
+      obj.textContent = isFloat ? current.toFixed(2) : Math.round(current);
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  };
+
+  const updateUI = () => {
+    const results = calculateResults(state.subjects);
+    
+    // Theme
+    DOM.root.setAttribute('data-theme', state.theme);
+    DOM.btnTheme.innerHTML = state.theme === 'dark' 
+      ? '<svg class="icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'
+      : '<svg class="icon moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+
+    // Hero
+    if (Math.abs(currentTGPA - results.tgpa) > 0.01) {
+      animateValue(DOM.tgpaValue, currentTGPA, results.tgpa, 1000, true);
+      const mVal = document.getElementById('mobileTgpaVal');
+      if (mVal) animateValue(mVal, currentTGPA, results.tgpa, 1000, true);
+      currentTGPA = results.tgpa;
+    } else {
+      DOM.tgpaValue.textContent = results.tgpa.toFixed(2);
+      const mVal = document.getElementById('mobileTgpaVal');
+      if (mVal) mVal.textContent = results.tgpa.toFixed(2);
+    }
+
+    DOM.totCredits.textContent = results.totalCredits;
+    DOM.totPoints.textContent = results.totalGradePoints;
+
+    // Ring Animation
+    const offset = CIRCLE_CIRCUMFERENCE - (results.tgpa / 10) * CIRCLE_CIRCUMFERENCE;
+    DOM.tgpaRing.style.strokeDashoffset = offset;
+    
+    // Ring Color logic
+    if (results.tgpa >= 9) {
+      DOM.root.style.setProperty('--ring-color', 'var(--success)');
+      if (!confettiFired && results.validSubjects > 0) { fireConfetti(); showToast('Incredible TGPA achieved!', 'success'); confettiFired = true; }
+    } else if (results.tgpa >= 6) {
+      DOM.root.style.setProperty('--ring-color', 'var(--accent)');
+      confettiFired = false;
+    } else if (results.tgpa > 0) {
+      DOM.root.style.setProperty('--ring-color', 'var(--warning)');
+      confettiFired = false;
+    } else {
+      DOM.root.style.setProperty('--ring-color', 'var(--border)');
+      confettiFired = false;
+    }
+
+    // Health Score
+    DOM.healthVal.textContent = results.validSubjects > 0 ? results.healthScore : '--';
+    const healthOffset = HEALTH_CIRCUMFERENCE - (results.healthScore / 100) * HEALTH_CIRCUMFERENCE;
+    DOM.healthRing.style.strokeDashoffset = healthOffset;
+    if(results.healthScore > 80) { DOM.healthRing.style.stroke = 'var(--success)'; DOM.healthSub.textContent = 'Excellent'; }
+    else if(results.healthScore > 50) { DOM.healthRing.style.stroke = 'var(--accent)'; DOM.healthSub.textContent = 'Stable'; }
+    else if(results.healthScore > 0) { DOM.healthRing.style.stroke = 'var(--warning)'; DOM.healthSub.textContent = 'Needs work'; }
+    else { DOM.healthRing.style.stroke = 'var(--border)'; DOM.healthSub.textContent = 'Awaiting data'; }
+
+    // Analytics
+    if (results.validSubjects > 0) {
+      DOM.statHighVal.textContent = results.highest.marks;
+      DOM.statHighSub.textContent = escapeHTML(results.highest.name);
+      DOM.statLowVal.textContent = results.lowest.marks;
+      DOM.statLowSub.textContent = escapeHTML(results.lowest.name);
+      DOM.statAvgVal.textContent = results.avgMarks.toFixed(1);
+      
+      let status = "Excellent"; let sub = "Keep it up!";
+      if (results.tgpa < 5) { status = "Critical"; sub = "Needs attention"; DOM.statStatus.style.color = "var(--danger)"; }
+      else if (results.tgpa < 7) { status = "Average"; sub = "Room to grow"; DOM.statStatus.style.color = "var(--warning)"; }
+      else if (results.tgpa < 9) { status = "Good"; sub = "Solid performance"; DOM.statStatus.style.color = "var(--accent)"; }
+      else { DOM.statStatus.style.color = "var(--success)"; }
+      
+      DOM.statStatus.textContent = status;
+      DOM.statStatusSub.textContent = sub;
+    } else {
+      DOM.statHighVal.textContent = "-"; DOM.statHighSub.textContent = "Add subjects to see";
+      DOM.statLowVal.textContent = "-"; DOM.statLowSub.textContent = "Add subjects to see";
+      DOM.statAvgVal.textContent = "-";
+      DOM.statStatus.textContent = "-"; DOM.statStatus.style.color = "inherit"; DOM.statStatusSub.textContent = "Keep pushing!";
+    }
+
+    // Update Charts & Badges
+    updateCharts(results);
+    updateBadges(results);
+
+    // Workspace
+    DOM.subjectCount.textContent = state.subjects.length;
+    if (state.subjects.length === 0) {
+      DOM.emptyState.style.opacity = '1';
+      DOM.emptyState.style.pointerEvents = 'auto';
+    } else {
+      DOM.emptyState.style.opacity = '0';
+      DOM.emptyState.style.pointerEvents = 'none';
+    }
+
+    // Update Favicon Title
+    document.title = results.tgpa > 0 ? `TGPA: ${results.tgpa.toFixed(2)} | Pro Dashboard` : 'TGPA Dashboard Pro';
+  };
+
+  const updateCharts = (results) => {
+    const orderedGrades = ['O', 'A+', 'A', 'B+', 'B', 'C', 'F'];
+    const maxVal = Math.max(...Object.values(results.grades), 1);
+    
+    let chartHtml = '';
+    orderedGrades.forEach(g => {
+      const val = results.grades[g] || 0;
+      const pct = maxVal > 0 ? (val / maxVal) * 100 : 0;
+      let color = 'var(--accent)';
+      if (g === 'O' || g === 'A+') color = 'var(--success)';
+      if (g === 'F') color = 'var(--danger)';
+      
+      chartHtml += `
+        <div class="bar-row" data-val="${val}">
+          <span class="bar-label" aria-hidden="true">${g}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width: ${pct}%; background: ${color}"></div>
+          </div>
+          <span class="bar-val" aria-label="${val} subjects with grade ${g}">${val}</span>
+        </div>
+      `;
+    });
+    DOM.gradeChart.innerHTML = chartHtml;
+  };
+
+  const updateBadges = (results) => {
+    DOM.badgeStarter.classList.toggle('active', state.subjects.length > 0);
+    DOM.badgeStarter.classList.toggle('success', state.subjects.length > 0);
+    
+    const hasPerfect = state.subjects.some(s => parseFloat(s.marks) === 100);
+    DOM.badgePerfect.classList.toggle('active', hasPerfect);
+    DOM.badgePerfect.classList.toggle('success', hasPerfect);
+    
+    const isHigh = results.tgpa >= 9;
+    DOM.badgeHigh.classList.toggle('active', isHigh);
+    DOM.badgeHigh.classList.toggle('success', isHigh);
+  };
+
+  const createSubjectRow = (subject, animate = false) => {
+    const row = document.createElement('div');
+    row.className = `subject-row glass-card ${animate ? 'anim-in' : ''}`;
+    row.dataset.id = subject.id;
+    row.setAttribute('draggable', 'true');
+    row.setAttribute('role', 'listitem');
+    
+    const gp = getGradePoint(subject.marks);
+
+    row.innerHTML = `
+      <div class="drag-handle" title="Drag to reorder" aria-hidden="true">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="8" y1="18" x2="16" y2="18"></line></svg>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="code-${subject.id}">Code</label>
+        <input type="text" id="code-${subject.id}" placeholder="e.g. CS101" class="inp-code" value="${escapeHTML(subject.code || '')}">
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="name-${subject.id}">Name (Opt)</label>
+        <input type="text" id="name-${subject.id}" placeholder="e.g. Mathematics" class="inp-name" value="${escapeHTML(subject.name || '')}">
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="marks-${subject.id}">Marks (0-100)</label>
+        <input type="number" id="marks-${subject.id}" min="0" max="100" placeholder="0" class="inp-marks" value="${subject.marks !== null ? subject.marks : ''}" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="credits-${subject.id}">Credits</label>
+        <input type="number" id="credits-${subject.id}" min="1" max="10" placeholder="0" class="inp-credits" value="${subject.credits || ''}" inputmode="numeric" pattern="[0-9]*">
+      </div>
+      <div class="grade-point-display" aria-label="Grade Point ${gp}">
+        <span class="grade-point-val">${gp}</span>
+        <span class="grade-point-label">Point</span>
+      </div>
+      <div class="row-actions">
+        <button class="btn-icon btn-remove" title="Remove Subject" aria-label="Remove Subject">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+    `;
+
+    // Listeners for inputs
+    const inputs = row.querySelectorAll('input');
+    inputs.forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const cls = e.target.className;
+        let val = e.target.value;
+        
+        if (cls.includes('inp-marks')) {
+          if (val !== '') {
+            let num = parseFloat(val);
+            if (num > MAX_MARKS) { num = MAX_MARKS; e.target.value = MAX_MARKS; }
+            if (num < MIN_MARKS) { num = MIN_MARKS; e.target.value = MIN_MARKS; }
+            subject.marks = num;
+          } else {
+            subject.marks = null;
+          }
+          row.querySelector('.grade-point-val').textContent = getGradePoint(subject.marks);
+        } else if (cls.includes('inp-credits')) {
+          subject.credits = val !== '' ? parseFloat(val) : 0;
+        } else if (cls.includes('inp-code')) {
+          subject.code = val;
+        } else if (cls.includes('inp-name')) {
+          subject.name = val;
+        }
+        
+        saveState();
+        updateUI();
+      });
+    });
+
+    row.querySelector('.btn-remove').addEventListener('click', () => {
+      row.classList.add('removing');
+      setTimeout(() => {
+        state.subjects = state.subjects.filter(s => s.id !== subject.id);
+        row.remove();
+        saveState();
+        updateUI();
+        showToast('Subject removed', 'info');
+      }, 300);
+    });
+
+    // Drag and Drop Logic
+    row.addEventListener('dragstart', (e) => {
+      draggedItem = row;
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => row.classList.add('dragging'), 0);
+    });
+    row.addEventListener('dragend', () => {
+      draggedItem = null;
+      row.classList.remove('dragging');
+      document.querySelectorAll('.subject-row').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      if(draggedItem !== row) row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over');
+    });
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      if (draggedItem !== row && draggedItem) {
+        const allRows = Array.from(DOM.subjectList.querySelectorAll('.subject-row'));
+        const draggedIdx = allRows.indexOf(draggedItem);
+        const droppedIdx = allRows.indexOf(row);
+        
+        // Reorder DOM
+        if (draggedIdx < droppedIdx) {
+          row.after(draggedItem);
+        } else {
+          row.before(draggedItem);
+        }
+        
+        // Reorder State
+        const item = state.subjects.splice(draggedIdx, 1)[0];
+        state.subjects.splice(droppedIdx, 0, item);
+        saveState();
+      }
+    });
+
+    return row;
+  };
+
+  const renderSubjectList = () => {
+    const existingRows = Array.from(DOM.subjectList.querySelectorAll('.subject-row'));
+    existingRows.forEach(r => r.remove());
+    
+    if (DOM.listSkeleton) DOM.listSkeleton.style.opacity = '0';
+    
+    state.subjects.forEach(sub => {
+      DOM.subjectList.appendChild(createSubjectRow(sub, false));
+    });
+  };
+
+  const addSubject = () => {
+    const newSub = { id: generateId(), code: '', name: '', marks: null, credits: 3 };
+    state.subjects.push(newSub);
+    const row = createSubjectRow(newSub, true);
+    DOM.subjectList.appendChild(row);
+    saveState();
+    updateUI();
+    showToast('New subject added', 'success');
+    
+    setTimeout(() => {
+      const inp = row.querySelector('.inp-code');
+      if (inp) {
+        inp.focus();
+        // On mobile smoothly scroll to bottom when adding new
+        if(window.innerWidth <= 768) {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+      }
+    }, 50);
+  };
+
+  // --- Controllers (Events) ---
+  const initEvents = () => {
+    DOM.btnAdd.addEventListener('click', addSubject);
+    if (DOM.btnMobileAdd) DOM.btnMobileAdd.addEventListener('click', addSubject);
+    if (DOM.btnMobileCalc) {
+      DOM.btnMobileCalc.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    }
+    
+    DOM.btnTheme.addEventListener('click', () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      saveState();
+      updateUI();
+      showToast(`${state.theme === 'dark' ? 'Dark' : 'Light'} mode enabled`, 'info');
+    });
+
+    DOM.btnReset.addEventListener('click', () => {
+      if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+        state.subjects = [];
+        renderSubjectList();
+        saveState();
+        updateUI();
+        showToast('All data cleared', 'error');
+      }
+    });
+
+    DOM.btnExport.addEventListener('click', () => window.print());
+
+    DOM.btnStart.addEventListener('click', () => {
+      DOM.onboarding.classList.add('hidden');
+      state.onboarded = true;
+      saveState();
+      if(state.subjects.length === 0) addSubject();
+    });
+
+    // Centralized Event Management for High Performance Interactions
+    const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+    
+    if (!isTouchDevice) {
+      const cursorDot = document.getElementById('cursorDot');
+      const cursorOutline = document.getElementById('cursorOutline');
+      
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      let outlineX = mouseX;
+      let outlineY = mouseY;
+      
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      }, { passive: true });
+
+      const renderInteractions = () => {
+        // Cursor physics
+        outlineX += (mouseX - outlineX) * 0.2;
+        outlineY += (mouseY - outlineY) * 0.2;
+        
+        cursorDot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+        cursorOutline.style.transform = `translate3d(${outlineX}px, ${outlineY}px, 0)`;
+
+        // Throttled Glass Card Glow Updates
+        const cards = document.querySelectorAll('.glass-card');
+        cards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          // Distance optimization
+          if (mouseX >= rect.left - 200 && mouseX <= rect.right + 200 && 
+              mouseY >= rect.top - 200 && mouseY <= rect.bottom + 200) {
+            const x = mouseX - rect.left;
+            const y = mouseY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+          }
+        });
+
+        requestAnimationFrame(renderInteractions);
+      };
+      requestAnimationFrame(renderInteractions);
+
+      // Handle custom cursor hover states globally
+      document.addEventListener('mouseover', (e) => {
+        if(e.target.tagName.toLowerCase() === 'input' || e.target.closest('button') || e.target.closest('.magnetic-btn') || e.target.closest('.drag-handle')) {
+          document.body.classList.add('hovering');
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        if(e.target.tagName.toLowerCase() === 'input' || e.target.closest('button') || e.target.closest('.magnetic-btn') || e.target.closest('.drag-handle')) {
+          document.body.classList.remove('hovering');
+        }
+      });
+
+      // Magnetic Buttons Delegation
+      document.querySelectorAll('.magnetic-btn').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          btn.style.transform = `translate3d(${x * 0.3}px, ${y * 0.3}px, 0)`;
+        }, { passive: true });
+        
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = `translate3d(0, 0, 0)`;
+        }, { passive: true });
+      });
+    }
+
+    // Command Palette Logic
+    let cmdIndex = 0;
+    const cmdItems = Array.from(DOM.cmdList.querySelectorAll('.cmd-item'));
+    
+    const updateCmdSelection = () => {
+      cmdItems.forEach((el, i) => {
+        el.classList.toggle('selected', i === cmdIndex);
+        if (i === cmdIndex) el.scrollIntoView({ block: 'nearest' });
+      });
+    };
+
+    const toggleCmd = (force) => {
+      const isActive = force !== undefined ? force : !DOM.cmdOverlay.classList.contains('active');
+      DOM.cmdOverlay.classList.toggle('active', isActive);
+      if (isActive) {
+        DOM.cmdInput.value = '';
+        cmdIndex = 0;
+        updateCmdSelection();
+        setTimeout(() => DOM.cmdInput.focus(), 50);
+      } else {
+        DOM.cmdInput.blur();
+      }
+    };
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); toggleCmd(); }
+      if (e.key === 'Escape' && DOM.cmdOverlay.classList.contains('active')) toggleCmd(false);
+      
+      if (DOM.cmdOverlay.classList.contains('active')) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); cmdIndex = (cmdIndex + 1) % cmdItems.length; updateCmdSelection(); }
+        if (e.key === 'ArrowUp') { e.preventDefault(); cmdIndex = (cmdIndex - 1 + cmdItems.length) % cmdItems.length; updateCmdSelection(); }
+        if (e.key === 'Enter') { e.preventDefault(); cmdItems[cmdIndex].click(); }
+      }
+    });
+
+    DOM.cmdOverlay.addEventListener('click', (e) => {
+      if (e.target === DOM.cmdOverlay) toggleCmd(false);
+    });
+
+    cmdItems.forEach((item, i) => {
+      item.addEventListener('mouseenter', () => { cmdIndex = i; updateCmdSelection(); });
+      item.addEventListener('click', () => {
+        const action = item.dataset.action;
+        toggleCmd(false);
+        if (action === 'add') addSubject();
+        if (action === 'theme') DOM.btnTheme.click();
+        if (action === 'export') window.print();
+        if (action === 'reset') DOM.btnReset.click();
+      });
+    });
+  };
+
+  // --- Utils ---
+  function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  // --- Premium Particle & Confetti Engines ---
+  const initParticles = () => {
+    const ctx = DOM.particlesCanvas.getContext('2d', { alpha: true });
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    DOM.particlesCanvas.width = width;
+    DOM.particlesCanvas.height = height;
+    
+    // Disable particles on mobile for performance and battery
+    const isMobile = width <= 768;
+    if (isMobile) return;
+    
+    const numParticles = 40;
+    const particles = [];
+    
+    for(let i=0; i<numParticles; i++) {
+      particles.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 2,
+        dx: (Math.random() - 0.5) * 0.5,
+        dy: (Math.random() - 0.5) * 0.5
+      });
+    }
+
+    const animate = () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = state.theme === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)';
+      
+      particles.forEach(p => {
+        p.x += p.dx;
+        p.y += p.dy;
+        if(p.x < 0 || p.x > width) p.dx *= -1;
+        if(p.y < 0 || p.y > height) p.dy *= -1;
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      requestAnimationFrame(animate);
+    };
+    animate();
+    
+    window.addEventListener('resize', debounce(() => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      DOM.particlesCanvas.width = width;
+      DOM.particlesCanvas.height = height;
+    }, 200));
+  };
+
+  const fireConfetti = () => {
+    const ctx = DOM.canvas.getContext('2d');
+    DOM.canvas.width = window.innerWidth;
+    DOM.canvas.height = window.innerHeight;
+    
+    const particles = [];
+    const colors = ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff'];
+    const numConfetti = window.innerWidth <= 768 ? 80 : 150;
+    
+    for (let i = 0; i < numConfetti; i++) {
+      particles.push({
+        x: DOM.canvas.width / 2,
+        y: DOM.canvas.height + 10,
+        r: Math.random() * 6 + 2,
+        dx: Math.random() * 20 - 10,
+        dy: Math.random() * -20 - 15,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        tilt: Math.floor(Math.random() * 10) - 10,
+        tiltAngleInc: (Math.random() * 0.07) + 0.05,
+        tiltAngle: 0
+      });
+    }
+
+    let animationId;
+    const render = () => {
+      ctx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+      let active = false;
+      
+      particles.forEach(p => {
+        p.tiltAngle += p.tiltAngleInc;
+        p.y += (Math.cos(p.tiltAngle) + 1 + p.r / 2) / 2;
+        p.x += Math.sin(p.tiltAngle) * 2;
+        p.dy += 0.2; // gravity
+        p.x += p.dx;
+        p.y += p.dy;
+
+        ctx.beginPath();
+        ctx.lineWidth = p.r;
+        ctx.strokeStyle = p.color;
+        ctx.moveTo(p.x + p.tilt + p.r, p.y);
+        ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r);
+        ctx.stroke();
+
+        if (p.y <= DOM.canvas.height + 20) active = true;
+      });
+
+      if (active) {
+        animationId = requestAnimationFrame(render);
+      } else {
+        ctx.clearRect(0, 0, DOM.canvas.width, DOM.canvas.height);
+      }
+    };
+    render();
+  };
+
+  // --- Boot ---
+  const init = () => {
+    loadState();
+    
+    if (state.onboarded) {
+      DOM.onboarding.classList.add('hidden');
+    }
+    
+    setTimeout(() => {
+      renderSubjectList();
+      updateUI();
+      initEvents();
+      initParticles();
+    }, 100);
+  };
+
+  return { init };
+})();
+
+document.addEventListener('DOMContentLoaded', App.init);
+</script>
+</body>
+</html>

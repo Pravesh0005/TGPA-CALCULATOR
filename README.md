@@ -23,7 +23,7 @@
 <br/><br/>
 
 <!-- TYPING ANIMATION -->
-<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=20&pause=1100&color=7C3AED&center=true&vCenter=true&multiline=true&width=850&height=90&lines=Enter+marks+→+Get+SGPA+→+Track+TGPA+automatically+🎓;Academic+Health+Score+%7C+Grade+Distribution+Chart+%7C+PDF+Export+📊;Glassmorphism+UI+%7C+Particles+BG+%7C+Confetti+%7C+Command+Palette+⚡;Built+for+LPU+students+—+by+a+LPU+student+💜" alt="Typing SVG"/>
+<img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&size=20&pause=1100&color=7C3AED&center=true&vCenter=true&multiline=true&width=850&height=90&lines=Enter+marks+→+Get+SGPA+→+Track+TGPA+automatically+%F0%9F%8E%93;Academic+Health+Score+%7C+Grade+Distribution+Chart+%7C+PDF+Export+%F0%9F%93%8A;Glassmorphism+UI+%7C+Particles+BG+%7C+Confetti+%7C+Command+Palette+%E2%9A%A1;Built+for+LPU+students+—+by+a+LPU+student+%F0%9F%92%9C" alt="Typing SVG"/>
 
 <br/><br/>
 

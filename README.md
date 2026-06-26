@@ -48,7 +48,8 @@
 
 <h3>🎓 The most beautiful TGPA tracker ever made for LPU students.<br/>Enter your marks. Watch the magic happen.</h3>
 
-<br/>
+<br/><br/>
+
 </div>
 **[🚀 Open Now](#-open-now) • [✨ Features](#-features) • [🎨 UI Showcase](#-ui-showcase) • [📊 How It Works](#-how-it-works) • [⌨️ Shortcuts](#️-keyboard-shortcuts) • [🛠 Tech](#-tech-stack)**
 

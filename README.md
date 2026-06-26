@@ -185,22 +185,22 @@ xdg-open index.html    # Linux
 ┌─────────────────────────────────────────────────────────────────┐
 │                     TGPA CALCULATION ENGINE                     │
 ├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  You Enter:  Subject Name  |  Credits  |  Marks (out of 100)   │
+│                                                                 │
+│  You Enter:  Subject Name  |  Credits  |  Marks (out of 100)    │
 │                                        ↓                        │
 │  LPU Grade Scale:                                               │
-│  91–100 → O   = 10.0  |  81–90 → A+  = 9.0                    │
-│  71–80  → A   = 8.0   |  61–70 → B+  = 7.0                    │
-│  51–60  → B   = 6.0   |  41–50 → C   = 5.0                    │
+│  91–100 → O   = 10.0  |  81–90 → A+  = 9.0                      │
+│  71–80  → A   = 8.0   |  61–70 → B+  = 7.0                      │
+│  51–60  → B   = 6.0   |  41–50 → C   = 5.0                      │
 │  0–40   → F   = 0.0                                             │
 │                                        ↓                        │
-│  SGPA = Σ(Credits × Grade Points) / Σ(Credits)                 │
+│  SGPA = Σ(Credits × Grade Points) / Σ(Credits)                  │
 │                                        ↓                        │
-│  TGPA = Σ(All Sem Credits × SGPA) / Σ(All Credits)            │
+│  TGPA = Σ(All Sem Credits × SGPA) / Σ(All Credits)              │
 │                                        ↓                        │
 │  Academic Health Score:                                         │
-│  = min(100, round((TGPA × 8) + (avgMarks/10 × 2)))            │
-│                                                                  │
+│  = min(100, round((TGPA × 8) + (avgMarks/10 × 2)))              │
+│                                                                 |
 └─────────────────────────────────────────────────────────────────┘
 ```
 
